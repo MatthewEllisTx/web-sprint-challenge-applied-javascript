@@ -1,7 +1,7 @@
 // import { response } from "msw/lib/types";
 // I don't know what this does but it caused an error
 
-const Card = (article) => {
+const Card = (article, category) => {
   // TASK 5
   // ---------------------
   // Implement this function, which should return the markup you see below.
@@ -30,7 +30,7 @@ const Card = (article) => {
   const img = document.createElement('img');
   const authorSpan = document.createElement('span');
 
-  cardDiv.className = 'card';
+  cardDiv.classList.add('card', category);
   headlineDiv.className = 'headline';
   authorDiv.className = 'author';
   imgDiv.className = 'img-container';
@@ -64,13 +64,36 @@ const cardAppender = (selector) => {
     .then( response => response.json())
     .then( response => {
       const parentNode = document.querySelector(selector);
-      
+      const tabs = document.querySelectorAll('.tab');
+
       for(let topic in response.articles){
+
         response.articles[topic].forEach( article => {
-          parentNode.appendChild( Card(article) );
+          parentNode.appendChild( Card(article, topic) );
         })
+
+        // I did this in tab.js originally, but node.js messed it up. I figured I didn't want to deal with formatting
+        // and I figured that if buttons changed it would at least kind of match up with the topic (hence .indexOf)
+        //also this works because in index.js card.js is called after tabs.js
+        tabs.forEach( tab => {
+          // console.log(tab, topic);
+          if(tab.textContent.indexOf(topic) != -1){
+            tab.addEventListener('click', function(){
+              document.querySelectorAll('.card').forEach( card => {
+                if(Array.from(card.classList).indexOf(topic) != -1){
+                  card.style.display = 'flex';
+                } else {
+                  card.style.display = 'none';
+                }
+
+              })
+            })
+          }
+        })
+
       }
     })
+
 }
 
 export { Card, cardAppender }

@@ -21,8 +21,18 @@ const Tabs = (topics) => {
     const newTab = document.createElement('div');
     newTab.className = 'tab';
     newTab.textContent = topic;
+
     topicsDiv.appendChild(newTab);
   })
+
+  const allTab = document.createElement('div');
+  allTab.className = 'tab';
+  allTab.textContent = 'all';
+  allTab.addEventListener('click', () => {
+    document.querySelectorAll('.card').forEach( card => card.style.display = 'flex');
+  })
+
+  topicsDiv.appendChild(allTab);
 
   return topicsDiv;
 }
