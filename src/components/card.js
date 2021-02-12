@@ -1,3 +1,6 @@
+// import { response } from "msw/lib/types";
+// I don't know what this does but it caused an error
+
 const Card = (article) => {
   // TASK 5
   // ---------------------
@@ -17,6 +20,34 @@ const Card = (article) => {
   //   </div>
   // </div>
   //
+
+  const {headline, authorPhoto, authorName} = article;
+
+  const cardDiv = document.createElement('div');
+  const headlineDiv = document.createElement('div');
+  const authorDiv = document.createElement('div');
+  const imgDiv = document.createElement('div');
+  const img = document.createElement('img');
+  const authorSpan = document.createElement('span');
+
+  cardDiv.className = 'card';
+  headlineDiv.className = 'headline';
+  authorDiv.className = 'author';
+  imgDiv.className = 'img-container';
+
+  headlineDiv.textContent = headline;
+  img.src = authorPhoto;
+  authorSpan.textContent = authorName;
+
+  cardDiv.append(headlineDiv, authorDiv);
+  authorDiv.append(imgDiv, authorSpan);
+  imgDiv.appendChild(img);
+
+  cardDiv.addEventListener('click', function(){
+    console.log(headline);
+  })
+
+  return cardDiv;
 }
 
 const cardAppender = (selector) => {
@@ -28,6 +59,18 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
+
+  fetch('https://lambda-times-api.herokuapp.com/articles')
+    .then( response => response.json())
+    .then( response => {
+      const parentNode = document.querySelector(selector);
+      
+      for(let topic in response.articles){
+        response.articles[topic].forEach( article => {
+          parentNode.appendChild( Card(article) );
+        })
+      }
+    })
 }
 
 export { Card, cardAppender }
